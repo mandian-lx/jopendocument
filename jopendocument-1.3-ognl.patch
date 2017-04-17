@@ -1,0 +1,13 @@
+--- jopendocument-1.3/src/org/jopendocument/dom/template/engine/OGNLDataModel.java.ognl
++++ jopendocument-1.3/src/org/jopendocument/dom/template/engine/OGNLDataModel.java
+@@ -18,8 +18,8 @@
+ import java.util.HashMap;
+ import java.util.Map;
+ 
+-import ognl.Ognl;
+-import ognl.OgnlException;
++import org.apache.commons.ognl.Ognl;
++import org.apache.commons.ognl.OgnlException;
+ 
+ /**
+  * Contains data as regular Java objects.

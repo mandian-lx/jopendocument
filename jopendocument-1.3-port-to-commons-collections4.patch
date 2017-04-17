@@ -1,0 +1,257 @@
+--- jopendocument-1.3/src/org/jopendocument/util/CollectionUtils.java.collections4
++++ jopendocument-1.3/src/org/jopendocument/util/CollectionUtils.java
+@@ -45,8 +45,8 @@
+ import java.util.TreeSet;
+ import java.util.regex.Pattern;
+ 
+-import org.apache.commons.collections.Transformer;
+-import org.apache.commons.collections.TransformerUtils;
++import org.apache.commons.collections4.Transformer;
++import org.apache.commons.collections4.TransformerUtils;
+ 
+ /**
+  * Une classe regroupant des méthodes utilitaires pour les collections.
+@@ -232,11 +232,11 @@
+     }
+ 
+     public static <T> void filter(Collection<T> collection, IPredicate<? super T> predicate) {
+-        org.apache.commons.collections.CollectionUtils.filter(collection, predicate);
++        org.apache.commons.collections4.CollectionUtils.filter(collection, predicate);
+     }
+ 
+     public static <T> boolean exists(Collection<T> collection, IPredicate<? super T> predicate) {
+-        return org.apache.commons.collections.CollectionUtils.exists(collection, predicate);
++        return org.apache.commons.collections4.CollectionUtils.exists(collection, predicate);
+     }
+ 
+     /**
+@@ -475,7 +475,7 @@
+     }
+ 
+     static public <C extends Collection<?>> boolean containsAny(final C coll1, final C coll2) {
+-        return org.apache.commons.collections.CollectionUtils.containsAny(coll1, coll2);
++        return org.apache.commons.collections4.CollectionUtils.containsAny(coll1, coll2);
+     }
+ 
+     /**
+@@ -551,7 +551,7 @@
+     // avoid name collision causing eclipse bug https://bugs.eclipse.org/bugs/show_bug.cgi?id=319603
+     @SuppressWarnings("unchecked")
+     public static <T> Collection<T> intersection(final Collection<T> a, final Collection<T> b) {
+-        return org.apache.commons.collections.CollectionUtils.intersection(a, b);
++        return org.apache.commons.collections4.CollectionUtils.intersection(a, b);
+     }
+ 
+     /**
+@@ -647,12 +647,12 @@
+ 
+     @SuppressWarnings("unchecked")
+     public static <T> Collection<T> subtract(final Collection<T> a, final Collection<? extends T> b) {
+-        return org.apache.commons.collections.CollectionUtils.subtract(a, b);
++        return org.apache.commons.collections4.CollectionUtils.subtract(a, b);
+     }
+ 
+     @SuppressWarnings("unchecked")
+     public static <T> Collection<T> substract(final Collection<T> a, final Collection<? extends T> b) {
+-        return org.apache.commons.collections.CollectionUtils.subtract(a, b);
++        return org.apache.commons.collections4.CollectionUtils.subtract(a, b);
+     }
+ 
+     /**
+--- jopendocument-1.3/src/org/jopendocument/util/CollectionMap.java.collections4
++++ jopendocument-1.3/src/org/jopendocument/util/CollectionMap.java
+@@ -24,8 +24,9 @@
+ import java.util.Map;
+ import java.util.Set;
+ 
+-import org.apache.commons.collections.MultiHashMap;
+-import org.apache.commons.collections.MultiMap;
++import org.apache.commons.collections4.map.MultiValueMap;
++//import org.apache.commons.collections4.MultiValueMap;
++import org.apache.commons.collections4.MultiMap;
+ 
+ /**
+  * Une MultiMap qui permet de ne pas renvoyer <code>null</code>. De plus elle permet de choisir le
+@@ -36,7 +37,7 @@
+  * @param <V> type of elements in collections
+  */
+ @SuppressWarnings("unchecked")
+-public class CollectionMap<K, V> extends MultiHashMap {
++public class CollectionMap<K, V> extends MultiValueMap {
+ 
+     private static final int DEFAULT_CAPACITY = 16;
+ 
+@@ -97,7 +98,7 @@
+     }
+ 
+     public CollectionMap(Class aCollectionClass, final int initialCapacity) {
+-        super(initialCapacity);
++        super();
+         this.collectionClass = aCollectionClass;
+         this.collectionSpecimen = null;
+     }
+@@ -115,7 +116,7 @@
+      * @throws IllegalArgumentException is not a Cloneable.
+      */
+     public CollectionMap(Collection<V> collectionSpecimen, final int initialCapacity) {
+-        super(initialCapacity);
++        super();
+         this.collectionClass = null;
+         if (!(collectionSpecimen instanceof Cloneable))
+             throw new IllegalArgumentException(collectionSpecimen + " not a cloneable.");
+@@ -152,9 +153,10 @@
+     /*
+      * (non-Javadoc)
+      * 
+-     * @see org.apache.commons.collections.MultiHashMap#createCollection(java.util.Collection)
++     * @see org.apache.commons.collections4.MultiValueMap#createCollection(java.util.Collection)
+      */
+     public Collection<V> createCollection(Collection coll) {
++        Collection coll_tmp;
+         if (this.collectionClass != null)
+             try {
+                 if (coll == null) {
+@@ -174,8 +176,11 @@
+             } catch (Exception e) {
+                 throw ExceptionUtils.createExn(IllegalStateException.class, "clone() failed", e);
+             }
+-        } else
+-            return super.createCollection(coll);
++        } else {
++            coll_tmp = super.createCollection(coll.size());
++            coll_tmp.addAll(coll);
++            return coll_tmp;
++        }
+     }
+ 
+     public Class getCollectionClass() {
+@@ -219,8 +224,8 @@
+ 
+     /**
+      * Copies all of the mappings from the specified map to this map. This method is equivalent to
+-     * {@link MultiHashMap#MultiHashMap(Map)}. NOTE: cannot use Map<? extends K, ? extends V> since
+-     * java complains (MultiHashMap not being generic).
++     * {@link MultiValueMap#MultiValueMap(Map)}. NOTE: cannot use Map<? extends K, ? extends V> since
++     * java complains (MultiValueMap not being generic).
+      * 
+      * @param mapToCopy mappings to be stored in this map
+      */
+@@ -237,7 +242,7 @@
+         return this.putAll(key, asList(values));
+     }
+ 
+-    // generics : MultiHashMap is not generic but it extends HashMap who does
++    // generics : MultiValueMap is not generic but it extends HashMap who does
+     // so just override
+ 
+     @Override
+@@ -259,4 +264,4 @@
+     public Collection<V> remove(Object key) {
+         return (Collection<V>) super.remove(key);
+     }
+-}
+\ No newline at end of file
++}
+--- jopendocument-1.3/src/org/jopendocument/util/cc/IPredicate.java.collections4
++++ jopendocument-1.3/src/org/jopendocument/util/cc/IPredicate.java
+@@ -15,7 +15,7 @@
+ 
+ package org.jopendocument.util.cc;
+ 
+-import org.apache.commons.collections.Predicate;
++import org.apache.commons.collections4.Predicate;
+ 
+ public abstract class IPredicate<E> implements Predicate {
+ 
+--- jopendocument-1.3/src/org/jopendocument/util/cc/ExnTransformer.java.collections4
++++ jopendocument-1.3/src/org/jopendocument/util/cc/ExnTransformer.java
+@@ -17,7 +17,7 @@
+ 
+ import org.jopendocument.util.ExceptionUtils;
+ 
+-import org.apache.commons.collections.Transformer;
++import org.apache.commons.collections4.Transformer;
+ 
+ /**
+  * Transformer able to throw an exception.
+--- jopendocument-1.3/src/org/jopendocument/util/cache/ICache.java.collections4
++++ jopendocument-1.3/src/org/jopendocument/util/cache/ICache.java
+@@ -30,7 +30,7 @@
+ import java.util.Timer;
+ import java.util.logging.Level;
+ 
+-import org.apache.commons.collections.map.LazyMap;
++import org.apache.commons.collections4.map.LazyMap;
+ 
+ /**
+  * To keep results computed from some data. The results will be automatically invalidated after some
+@@ -104,7 +104,7 @@
+ 
+     @SuppressWarnings("unchecked")
+     public final void setWatcherFactory(final CacheWatcherFactory<K, D> f) {
+-        this.watchers = LazyMap.decorate(new HashMap(), new Transformer<D, CacheWatcher<K, D>>() {
++        this.watchers = LazyMap.lazyMap(new HashMap(), new Transformer<D, CacheWatcher<K, D>>() {
+ 
+             @Override
+             public CacheWatcher<K, D> transformChecked(D input) {
+@@ -305,4 +305,4 @@
+     public final String toString() {
+         return this.getClass().getName() + ", keys cached: " + this.timeoutTasks.keySet();
+     }
+-}
+\ No newline at end of file
++}
+--- jopendocument-1.3/src/org/jopendocument/util/cc/Transformer.java.collections4
++++ jopendocument-1.3/src/org/jopendocument/util/cc/Transformer.java
+@@ -15,7 +15,7 @@
+ 
+ package org.jopendocument.util.cc;
+ 
+-public abstract class Transformer<E, T> implements ITransformer<E, T>, IClosure<E>, org.apache.commons.collections.Transformer {
++public abstract class Transformer<E, T> implements ITransformer<E, T>, IClosure<E>, org.apache.commons.collections4.Transformer {
+ 
+     private static final ITransformer<Object, Object> nopTransf = new ITransformer<Object, Object>() {
+         @Override
+--- jopendocument-1.3/src/org/jopendocument/util/cc/ITransformerWrapper.java.collections4
++++ jopendocument-1.3/src/org/jopendocument/util/cc/ITransformerWrapper.java
+@@ -17,9 +17,9 @@
+ 
+ public class ITransformerWrapper<E, T> extends Transformer<E, T> {
+ 
+-    private final org.apache.commons.collections.Transformer transf;
++    private final org.apache.commons.collections4.Transformer transf;
+ 
+-    public ITransformerWrapper(final org.apache.commons.collections.Transformer transf) {
++    public ITransformerWrapper(final org.apache.commons.collections4.Transformer transf) {
+         super();
+         this.transf = transf;
+     }
+--- jopendocument-1.3/src/org/jopendocument/dom/ODSingleXMLDocument.java.collections4
++++ jopendocument-1.3/src/org/jopendocument/dom/ODSingleXMLDocument.java
+@@ -47,7 +47,7 @@
+ import java.util.Map.Entry;
+ import java.util.Set;
+ 
+-import org.apache.commons.collections.Transformer;
++import org.apache.commons.collections4.Transformer;
+ import org.jdom.Attribute;
+ import org.jdom.Content;
+ import org.jdom.DocType;
+@@ -1031,7 +1031,7 @@
+     protected final void detachDuplicate(Element elem) throws JDOMException {
+         final String singularName = elem.getName().substring(0, elem.getName().length() - 1);
+         final List thisNames = getXPath("./text:" + singularName + "s/text:" + singularName + "/@text:name").selectNodes(getChild("body"));
+-        org.apache.commons.collections.CollectionUtils.transform(thisNames, new Transformer() {
++        org.apache.commons.collections4.CollectionUtils.transform(thisNames, new Transformer() {
+             public Object transform(Object obj) {
+                 return ((Attribute) obj).getValue();
+             }
+@@ -1198,7 +1198,7 @@
+         // les styles de ce document
+         List thisElemNames = xp.selectNodes(thisParent);
+         // on transforme la liste d'attributs en liste de String
+-        org.apache.commons.collections.CollectionUtils.transform(thisElemNames, new Transformer() {
++        org.apache.commons.collections4.CollectionUtils.transform(thisElemNames, new Transformer() {
+             public Object transform(Object obj) {
+                 return ((Attribute) obj).getValue();
+             }
