@@ -66,7 +66,7 @@ API documentation for %{name}.
 #----------------------------------------------------------------------------
 
 %prep
-%setup -q
+%setup -q -c %{name}-%{version}
 # Delete all prebuild JARs and classes
 find . -name "*.jar" -delete
 find . -name "*.class" -delete
