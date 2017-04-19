@@ -5,11 +5,11 @@
              if (this.passwordProtected != other.passwordProtected)
                  return false;
 -            return canBeMerged(this.modules, other.modules) && canBeMerged(this.dialogs, other.dialogs);
-+            return _canBeMerged(this.modules, other.modules) && _canBeMerged(this.dialogs, other.dialogs);
++            return mapCanBeMerged(this.modules, other.modules) && mapCanBeMerged(this.dialogs, other.dialogs);
          }
  
 -        static private final <V> boolean canBeMerged(final Map<String, V> m1, final Map<String, V> m2) {
-+        static private final <V> boolean _canBeMerged(final Map<String, V> m1, final Map<String, V> m2) {
++        static private final <V> boolean mapCanBeMerged(final Map<String, V> m1, final Map<String, V> m2) {
              final Set<String> duplicateKeys = CollectionUtils.inter(m1.keySet(), m2.keySet());
              for (final String key : duplicateKeys) {
                  final V v1 = m1.get(key);
