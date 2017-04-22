@@ -97,16 +97,17 @@ export ANT_OPTS=' -Dfile.encoding=UTF-8 -Djavadoc.encoding=ISO-8859-1 -Djavadoc.
 
 %install
 # jar
-install -d -m 0755 %{buildroot}%{_javadir}/%{name}
-install -p -m 0644 dist/%{oname}-%{version}.jar %{buildroot}%{_javadir}/%{name}/
+install -dm 0755 %{buildroot}%{_javadir}/%{name}
+install -pm 0644 dist/%{oname}-%{version}.jar %{buildroot}%{_javadir}/%{name}/
 
 # javadoc
+install -dm 0755 %{buildroot}%{_javadocdir}/%{name}
 cp -pr doc/* %{buildroot}%{_javadocdir}/%{name}
 
 # maven
 #   POM
-install -d -m 0755 %{buildroot}%{_mavenpomdir}
-install -p -m 0644 %{SOURCE1} %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
+install -dm 0755 %{buildroot}%{_mavenpomdir}
+install -pm 0644 %{SOURCE1} %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
 #   XMvn metadata
 %add_maven_depmap
 
