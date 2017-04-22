@@ -46,6 +46,8 @@ jOpenDocument to:
     - And much more...
 
 %files -f .mfiles
+%dir %{_javadir}/%{name}
+%dir %{_mavenpomdir}/%{name}
 %dir %{_datadir}/%{name}/
 %{_datadir}/%{name}/template/
 %doc README
@@ -78,7 +80,6 @@ find . -name "*.class" -delete
 
 # Add pom.xml file
 cp %{SOURCE1} pom.xml
-%mvn_artifact pom.xml dist/%{oname}-%{version}.jar
 
 # Set classpath
 build-jar-repository ./lib commons-collections4 commons-ognl isorelax itext jaxen jcip-annotations jdom js junit
@@ -95,6 +96,9 @@ export ANT_OPTS=' -Dfile.encoding=UTF-8 -Djavadoc.encoding=ISO-8859-1 -Djavadoc.
 	-classpath `build-classpath commons-collections4 commons-ognl isorelax itext jaxen jcip-annotations jdom js junit` \
 	-d doc -public \
 	`find ./src -name '*.java'`
+
+# maven artifact
+%mvn_artifact pom.xml dist/%{oname}-%{version}.jar
 
 %install
 %mvn_install -J doc
