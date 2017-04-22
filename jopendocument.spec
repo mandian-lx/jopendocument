@@ -92,6 +92,7 @@ export ANT_OPTS=' -Dfile.encoding=UTF-8 -Djavadoc.encoding=ISO-8859-1 -Djavadoc.
 # docs
 %javadoc \
 	-encoding ISO-8859-1 -docencoding UTF-8 \
+	-classpath *jar \
 	-d doc -public \
 	`find ./src -name '*.java'`
 
