@@ -79,6 +79,12 @@ find . -name "*.class" -delete
 %patch1 -p1 -b .jdk8
 %patch2 -p1 -b .collections4
 
+# add pom.xml
+cp %{SOURCE1} ./pom.xml
+
+# fix packaging
+%pom_xpath_inject "pom:project" "<packaging>pom</packaging>" ./pom.xml
+
 # Set classpath
 build-jar-repository ./lib commons-collections4 commons-ognl isorelax itext jaxen jcip-annotations jdom js junit
 
@@ -107,7 +113,7 @@ cp -pr doc/* %{buildroot}%{_javadocdir}/%{name}
 # maven
 #   POM
 install -dm 0755 %{buildroot}%{_mavenpomdir}/
-install -pm 0644 %{SOURCE1} %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
+install -pm 0644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
 #   XMvn metadata
 %add_maven_depmap JPP-%{name}.pom %{oname}.jar
 
