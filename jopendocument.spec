@@ -115,7 +115,7 @@ cp -pr doc/* %{buildroot}%{_javadocdir}/%{name}
 install -dm 0755 %{buildroot}%{_mavenpomdir}/
 install -pm 0644 pom.xml %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
 #   XMvn metadata
-%add_maven_depmap JPP-%{name}.pom %{oname}.jar
+%add_maven_depmap JPP-%{name}.pom  %{name}/%{oname}.jar
 
 # template
 install -dm 0755 %{buildroot}%{_datadir}/%{name}/template/
