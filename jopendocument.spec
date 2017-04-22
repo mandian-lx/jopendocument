@@ -62,7 +62,8 @@ Summary:	Javadoc for %{name}
 %description javadoc
 API documentation for %{name}.
 
-%files javadoc -f .mfiles-javadoc
+%files javadoc
+%doc %{_javadocdir}/%{name}
 %doc LICENSE.txt
 
 #----------------------------------------------------------------------------
@@ -77,9 +78,6 @@ find . -name "*.class" -delete
 %patch0 -p1 -b .orig
 %patch1 -p1 -b .jdk8
 %patch2 -p1 -b .collections4
-
-# Add pom.xml file
-cp %{SOURCE1} pom.xml
 
 # Set classpath
 build-jar-repository ./lib commons-collections4 commons-ognl isorelax itext jaxen jcip-annotations jdom js junit
@@ -97,11 +95,20 @@ export ANT_OPTS=' -Dfile.encoding=UTF-8 -Djavadoc.encoding=ISO-8859-1 -Djavadoc.
 	-d doc -public \
 	`find ./src -name '*.java'`
 
-# maven artifact
-%mvn_artifact pom.xml dist/%{oname}-%{version}.jar
-
 %install
-%mvn_install -J doc
+# jar
+install -d -m 0755 %{buildroot}%{_javadir}/%{name}
+install -p -m 0644 dist/%{oname}-%{version}.jar %{buildroot}%{_javadir}/%{name}/
+
+# javadoc
+cp -pr doc/* %{buildroot}%{_javadocdir}/%{name}
+
+# maven
+#   POM
+install -d -m 0755 %{buildroot}%{_mavenpomdir}
+install -p -m 0644 %{SOURCE1} %{buildroot}%{_mavenpomdir}/JPP-%{name}.pom
+#   XMvn metadata
+%add_maven_depmap
 
 # template
 install -dm 0755 %{buildroot}%{_datadir}/%{name}/template/
