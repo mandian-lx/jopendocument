@@ -45,7 +45,7 @@ jOpenDocument to:
     - Use your preferred langage via standard ScriptEngine interface
     - And much more...
 
-%files -f
+%files
 %dir %{_javadir}/%{name}
 #dir %{_mavenpomdir}/%{name}
 %dir %{_datadir}/%{name}/
