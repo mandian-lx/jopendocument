@@ -47,6 +47,7 @@ jOpenDocument to:
 
 %files
 %dir %{_javadir}/%{name}
+%dir %{_javadir}/%{name}/%{oname}.jar
 #dir %{_mavenpomdir}/%{name}
 %dir %{_datadir}/%{name}/
 %{_datadir}/%{name}/template/
